@@ -1,0 +1,3 @@
+-- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+-- 'lambdalisue/suda.vim', -- Write files with sudo using :Sudawrite
+-- 'svban/YankAssassin.vim', -- Stop the cursor from moving when yanking a selection

@@ -1,0 +1,12 @@
+local please = require('please')
+local popup_runner = require('please.runners.popup')
+
+vim.keymap.set('n', '<leader>pb', please.build, { silent = true })
+vim.keymap.set('n', '<leader>pr', please.run, { silent = true })
+vim.keymap.set('n', '<leader>pt', please.test, { silent = true })
+vim.keymap.set('n', '<leader>pct', function()
+  please.test({ under_cursor = true })
+end, { silent = true })
+vim.keymap.set('n', '<leader>pj', please.jump_to_target, { silent = true })
+vim.keymap.set('n', '<leader>py', please.yank, { silent = true })
+vim.keymap.set('n', '<leader>pp', popup_runner.restore)
