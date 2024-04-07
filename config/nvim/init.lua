@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, vim.g.lazypath })
+  vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
 end ---@diagnostic disable-next-line: undefined-field
 
 -- [[ Configure and install plugins ]]
