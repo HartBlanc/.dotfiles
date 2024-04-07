@@ -17,19 +17,16 @@ end, { desc = '[F]ormat on save [T]oggle ([P]uku)' })
 require('conform').setup({
   formatters = {
     puku = {
-      command = 'puku fmt',
+      command = 'puku',
+      args = { 'fmt', '$FILENAME' },
     },
   },
   formatters_by_ft = {
     lua = { 'stylua' },
     python = { 'black' },
-    go = { 'gofmt' },
+    go = { 'goimports' },
     javascript = { 'prettier' },
     html = { 'prettier' },
-    --
-    -- You can use a sub-list to tell conform to run *until* a formatter
-    -- is found.
-    -- javascript = { { "prettierd", "prettier" } },
   },
   format_on_save = function(bufnr)
     if disable_autoformat then
