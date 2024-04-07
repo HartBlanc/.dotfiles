@@ -6,16 +6,13 @@ M.git_root = function(path)
     path = vim.api.nvim_buf_get_name(0)
   end
 
-  local git_dir = vim.fs.find('.git', {
-    upward = true,
-    path = path,
-    type = 'directory',
-  })
-  if not git_dir then
+  local dot_git_path = vim.fn.finddir('.git', path .. ';')
+  if not dot_git_path then
     vim.notify('failed to find git root', vim.log.levels.WARN)
     return
   end
-  return git_dir.path
+  -- for some reason providing :p:h or :h:p doesn't work, so we just chain them instead...
+  return vim.fn.fnamemodify(vim.fn.fnamemodify(dot_git_path, ':h'), ':p')
 end
 
 return M
