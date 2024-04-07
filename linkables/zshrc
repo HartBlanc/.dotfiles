@@ -127,6 +127,7 @@ alias gc-='git checkout -'
 alias gcm='git checkout master'
 alias gc@='git checkout @{u}'
 alias gs='git status'
+alias gap='git add --patch'
 
 function qf {
     nvim -q <(rg --column $@) +":copen"
