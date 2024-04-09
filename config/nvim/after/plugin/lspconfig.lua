@@ -1,14 +1,4 @@
-local configs = require('lspconfig.configs')
 local util = require('lspconfig.util')
-
--- Defines the please language server (this is the only one that is not inlcuded in lspconfig.configs by default)
-configs.please = {
-  default_config = {
-    cmd = { 'plz', 'tool', 'lps' },
-    filetypes = { 'please' },
-    root_dir = util.root_pattern('.plzconfig'),
-  },
-}
 
 -- Enable the following language servers
 --  Add any additional override configuration in the following tables. Available keys are:
@@ -113,9 +103,6 @@ require('mason-tool-installer').setup({ ensure_installed = ensure_installed })
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
--- add please after so that it gets setup (but not installed, as it won't be on mason)
-servers.please = {}
-
 require('mason-lspconfig').setup({
   handlers = {
     function(server_name)
@@ -128,3 +115,14 @@ require('mason-lspconfig').setup({
     end,
   },
 })
+
+-- Defines and sets up the the please language server (this is the only one that is not inlcuded in lspconfig.configs by
+-- default, and is also not included in mason)
+require('lspconfig.configs').please = {
+  default_config = {
+    cmd = { 'plz', 'tool', 'lps' },
+    filetypes = { 'please' },
+    root_dir = util.root_pattern('.plzconfig'),
+  },
+}
+require('lspconfig').please.setup({})
