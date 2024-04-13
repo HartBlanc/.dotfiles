@@ -1,50 +1,44 @@
-local disable_autoformat = false
+local format_on_save = false
 
 vim.keymap.set('n', '<leader>ft', function()
-  disable_autoformat = not disable_autoformat
+  format_on_save = not format_on_save
+  if format_on_save then
+    vim.notify('Disabled format on save', vim.log.levels.INFO)
+  else
+    vim.notify('Enabled format on save', vim.log.levels.INFO)
+  end
 end, { desc = '[F]ormat on save [T]oggle' })
 
-local puku_enabled = (vim.fn.executable('puku') == 1)
-
-vim.keymap.set('n', '<leader>ftp', function()
-  if puku_enabled then
-    vim.notify('Disabled puku auto-formatting', vim.log.levels.INFO)
-  else
-    vim.notify('Enabled puku auto-formatting', vim.log.levels.INFO)
-  end
-end, { desc = '[F]ormat on save [T]oggle ([P]uku)' })
+local go_formatters = { 'goimports' }
+if vim.fn.executable('golangci-lint') == 1 then
+  go_formatters = { 'goimports', 'golangcillint' }
+end
 
 require('conform').setup({
   formatters = {
-    puku = {
-      command = 'puku',
-      args = { 'fmt', '$FILENAME' },
+    golangcilint = {
+      stdin = false,
+      tmpfile_format = 'conform-nvim-tmp-$RANDOM-$FILENAME', -- golangci-lint can not find the file if it is a hidden file
+      command = 'golangci-lint',
+      args = {
+        'run',
+        '--fix',
+        '--fast',
+        '--internal-cmd-test', -- hack to disable typecheck
+        '--enable-only',
+        'gci',
+        '$FILENAME',
+      },
     },
   },
   formatters_by_ft = {
     lua = { 'stylua' },
     python = { 'black' },
-    go = { 'goimports' },
+    go = go_formatters,
     javascript = { 'prettier' },
     html = { 'prettier' },
   },
-  format_on_save = function(bufnr)
-    if disable_autoformat then
-      return
-    end
-
-    local formatters = nil
-    if vim.bo.filetype == 'go' then
-      if
-        not puku_enabled
-        or #vim.fs.find('.plzconfig', { upward = true, path = vim.api.nvim_buf_get_name(bufnr) }) < 1
-      then
-        formatters = { 'goimports' }
-      else
-        formatters = { 'goimports', 'puku' }
-      end
-    end
-
-    return { timeout_ms = 500, lsp_fallback = true, formatters = formatters }
-  end,
+  format_on_save = {
+    timeout_ms = 2000,
+  },
 })
