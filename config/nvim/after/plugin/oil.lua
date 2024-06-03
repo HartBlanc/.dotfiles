@@ -74,6 +74,32 @@ oil.setup({
         })
       end,
     },
+    ['<leader>pt'] = {
+      desc = '[P]lease [T]est',
+      callback = function()
+        local dir = oil.get_current_dir()
+        oil.close()
+
+        if not dir then
+          return
+        end
+        local relative_filepath = dir:gsub('^' .. git_root(), '')
+        require('please').command('test', relative_filepath .. '...')
+      end,
+    },
+    ['<leader>pb'] = {
+      desc = '[P]lease [B]uild',
+      callback = function()
+        local dir = oil.get_current_dir()
+        oil.close()
+
+        if not dir then
+          return
+        end
+        local relative_filepath = dir:gsub('^' .. git_root(), '')
+        require('please').command('build', relative_filepath .. '...')
+      end,
+    },
   },
 })
 
