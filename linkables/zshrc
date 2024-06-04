@@ -152,33 +152,6 @@ autoload -U url-quote-magic bracketed-paste-magic
 zle -N self-insert url-quote-magic
 zle -N bracketed-paste bracketed-paste-magic
 
-# NNN
-
-export NNN_PLUG="p:preview-tui;f:fzcd"
-export NNN_FIFO="/tmp/nnn.fifo"
-# alias for nnn which makes ^G only cd
-n ()
-{
-    # Block nesting of nnn in subshells
-    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
-        echo "nnn is already running"
-        return
-    fi
-    NNN_TMPFILE="$HOME/.config/nnn/.lastd"
-
-    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
-    stty start undef
-    stty stop undef
-    # stty lwrap undef
-    stty lnext undef
-
-    nnn "$@"
-    if [ -f "$NNN_TMPFILE" ]; then
-            . "$NNN_TMPFILE"
-            rm -f "$NNN_TMPFILE" > /dev/null
-    fi
-}
-
 # nord theme for nnn
 # https://github.com/jarun/nnn/wiki/Themes
 BLK="0B" CHR="0B" DIR="04" EXE="06" REG="00" HARDLINK="06" SYMLINK="06" MISSING="00" ORPHAN="09" FIFO="06" SOCK="0B" OTHER="06"

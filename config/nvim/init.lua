@@ -22,7 +22,6 @@ require('lazy').setup({
   {
     'marcuscaisey/please.nvim',
     dependencies = {
-      'nvim-treesitter/nvim-treesitter',
       'mfussenegger/nvim-dap',
     },
   },
