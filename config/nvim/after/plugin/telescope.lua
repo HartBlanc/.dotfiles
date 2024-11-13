@@ -251,3 +251,32 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   end,
 })
+
+vim.keymap.set('n', '<leader>cb', function()
+  local entry_maker = function(entry)
+    local _, _, filename, lnum = string.find(entry, [[(.*):(%d+):.*]])
+    return {
+      value = entry,
+      display = entry,
+      ordinal = entry,
+      path = filename,
+      lnum = tonumber(lnum),
+    }
+  end
+
+  local comby_live_grepper = require('telescope.finders').new_job(function(prompt)
+    if not prompt or prompt == '' then
+      return nil
+    end
+
+    return { 'comby', '-match-only', prompt, '' }
+  end, entry_maker)
+
+  require('telescope.pickers')
+    .new({}, {
+      prompt_title = 'Comby',
+      finder = comby_live_grepper,
+      previewer = require('telescope.config').values.grep_previewer({}),
+    })
+    :find()
+end, { desc = 'Find with [C]om[b]y' })
