@@ -199,7 +199,8 @@ require('telescope').setup({
 -- Enable telescope extensions, if they are installed
 pcall(require('telescope').load_extension, 'fzf')
 
-local function comby_picker()
+local function comby_picker(opts)
+  opts = opts or {}
   local entry_maker = function(entry)
     local _, _, filename, lnum = string.find(entry, [[(.*):(%d+):.*]])
     return {
@@ -220,10 +221,10 @@ local function comby_picker()
   end, entry_maker)
 
   require('telescope.pickers')
-    .new({}, {
+    .new(opts, {
       prompt_title = 'Comby',
       finder = comby_live_grepper,
-      previewer = require('telescope.config').values.grep_previewer({}),
+      previewer = require('telescope.config').values.grep_previewer(opts),
     })
     :find()
 end
