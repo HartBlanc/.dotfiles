@@ -42,7 +42,9 @@ vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- Quickfix navigation
 vim.keymap.set('n', ']q', vim.cmd.cnext, { desc = 'Jump to the next item in the [Q]uickfix list' })
+vim.keymap.set('n', ']Q', vim.cmd.cnfile, { desc = 'Jump to the next file in the [Q]uickfix list' })
 vim.keymap.set('n', '[q', vim.cmd.cprev, { desc = 'Jump to the previous item in the [Q]uickfix list' })
+vim.keymap.set('n', '[Q', vim.cmd.cpfile, { desc = 'Jump to the previous file in the [Q]uickfix list' })
 vim.keymap.set('n', '<leader>q', function()
   local qf_window_id = vim.fn.getqflist({ winid = 0 }).winid
   local qf_open = qf_window_id > 0
