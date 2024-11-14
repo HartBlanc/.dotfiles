@@ -16,7 +16,7 @@ sudo apt install build-essential
 sudo apt install zsh
 
 # build latest version of tmux from source
-curl -LO $(curl -s https://api.github.com/repos/tmux/tmux/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+curl -LO "$(curl -s https://api.github.com/repos/tmux/tmux/releases/latest | grep browser_download_url | cut -d '"' -f 4)"
 tar -xf tmux-*.tar.gz
 sudo apt-get install libevent-dev ncurses-dev build-essential bison pkg-config
 sudo apt-get install libevent ncurses
@@ -51,4 +51,4 @@ curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimag
 curl -sS https://starship.rs/install.sh | sh
 
 ~/.dotfiles/link.sh
-chsh -s $(which zsh)
+chsh -s "$(which zsh)"
