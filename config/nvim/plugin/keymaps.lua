@@ -32,6 +32,19 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Remove highlights 
 
 vim.keymap.set('n', '<leader>m', '<cmd>messages<cr>', { desc = 'Show all messages' })
 
+vim.keymap.set(
+  'n',
+  '/',
+  '/\\V',
+  { desc = 'Use verynomagic mode in all searches. i.e. all regexp special characters must be escaped.' }
+)
+vim.keymap.set(
+  'c',
+  's/',
+  's/\\V',
+  { desc = 'Use verynomagic mode in all substitutions. all regexp special characters must be escaped.' }
+)
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
