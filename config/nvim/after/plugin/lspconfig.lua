@@ -109,16 +109,31 @@ local servers = {
       python = {
         analysis = {
           autoSearchPaths = true,
-          diagnosticMode = 'workspace',
-          useLibraryCodeForTypes = true,
-          typeCheckingMode = 'off',
+          typeCheckingMode = 'standard',
+          verboseOutput = true,
+          logLevel = 'Trace',
           extraPaths = {
-            '/home/callum/core3/src',
-            '/home/callum/core3/src/plz-out/gen',
+            'plz_out/gen',
+            'plz-out/gen',
+            'plz-out/python/venv',
           },
         },
       },
     },
+    on_new_config = function(config, root_dir)
+      if util.root_pattern('.plzconfig') then
+        config.settings = vim.tbl_deep_extend('force', config.settings, {
+          python = {
+            analysis = {
+              extraPaths = {
+                vim.fs.joinpath(root_dir, 'plz-out/python/venv'),
+              },
+              exclude = { 'plz-out' },
+            },
+          },
+        })
+      end
+    end,
     root_dir = function()
       return vim.fn.getcwd()
     end,
