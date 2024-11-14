@@ -43,9 +43,11 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
 
 # install neovim
-curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage \
-&& chmod u+x nvim.appimage \
-&& sudo mv nvim.appimage /usr/local/bin/nvim
+curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz \
+&& tar -xzf nvim-linux64.tar.gz \
+&& sudo mv nvim-linux64/bin/nvim /usr/local/bin \
+&& rm -r nvim-linux64 \
+&& rm nvim-linux64.tar.gz
 
 # install starship prompt
 curl -sS https://starship.rs/install.sh | sh
