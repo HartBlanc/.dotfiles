@@ -15,7 +15,7 @@ require('mini.operators').setup({
   exchange = { prefix = '' },
   multiply = { prefix = '' },
   replace = { prefix = '<leader>r' },
-  sort = { prefix = '' },
+  sort = { prefix = '<leader>s' },
 })
 
 -- Add/delete/replace surroundings (brackets, quotes, etc.)
