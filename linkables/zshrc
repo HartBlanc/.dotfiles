@@ -123,6 +123,19 @@ function gcb {
     fi
 }
 
+# select a list of branches to delete from a list of all local branches
+function gbd {
+    if [ "$1" ]; then
+        BRANCH=$(git branch | fzf --multi --query=$1)
+    else
+        BRANCH=$(git branch | fzf --multi)
+    fi
+
+    if [ "$BRANCH" ]; then
+        git branch -D $(echo $BRANCH | sed 's/^[*+] //g')
+    fi
+}
+
 alias gc-='git checkout -'
 alias gcm='git checkout master'
 alias gc@='git checkout @{u}'
