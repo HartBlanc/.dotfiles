@@ -102,12 +102,18 @@ vim.keymap.set('n', '<leader>Y', function()
   vim.notify('Yanked absolute path of current buffer: ' .. filepath, vim.log.levels.INFO)
 end, { desc = 'Yank the absolute path of the current buffer' })
 
-vim.keymap.set('n', '<leader>sy', function()
+vim.keymap.set('n', '<leader>ys', function()
   local filepath = vim.api.nvim_buf_get_name(0)
   local relative_filepath = filepath:gsub('^' .. git_root(), '')
   local line = unpack(vim.api.nvim_win_get_cursor(0))
-  local relative_filepath_with_line = string.format('%s?L%d', relative_filepath, line)
-  vim.fn.setreg('"', relative_filepath_with_line)
-  vim.fn.setreg('*', relative_filepath_with_line)
-  vim.notify('Yanked: ' .. relative_filepath_with_line, vim.log.levels.INFO)
-end, { desc = 'Yank the path of the current buffer relative to the git root in sourcegraph search format' })
+  local base_url = vim.env.SOURCEGRAPH_BASE_URL
+  if not base_url then
+    vim.notify('Unable to yank sourcegraph URL: SOURCEGRAPH_BASE_URL env var not set', vim.log.levels.ERROR)
+    return
+  end
+  local url = string.format('%s/-/blob/%s?L%d', base_url, relative_filepath, line)
+  vim.fn.setreg('"', url)
+  vim.fn.setreg('*', url)
+
+  vim.notify('Yanked sourcegraph URL: ' .. url, vim.log.levels.INFO)
+end, { desc = 'Yank the sourcegraph URL to the current position in the buffer' })
