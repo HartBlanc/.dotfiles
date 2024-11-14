@@ -59,12 +59,13 @@ require('conform').setup({
     python = { 'black' },
     go = go_formatters,
     javascript = { 'prettier' },
+    json = { 'prettier' },
     html = { 'prettier' },
   },
   format_on_save = function()
     if disable_format_on_save then
       return
     end
-    return { timeout_ms = 2000 }
+    return { timeout_ms = 10000 }
   end,
 })
