@@ -100,6 +100,19 @@ oil.setup({
         require('please').command('build', relative_filepath .. '...')
       end,
     },
+    ['<leader>al'] = {
+      desc = '[A]rc [L]int',
+      callback = function()
+        local dir = oil.get_current_dir()
+        oil.close()
+
+        if not dir then
+          return
+        end
+        local relative_filepath = dir:gsub('^' .. git_root(), '')
+        require('arc-lint').arc_lint(relative_filepath .. '*')
+      end,
+    },
   },
 })
 
