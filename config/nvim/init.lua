@@ -245,6 +245,7 @@ require('lazy').setup({
       { 'nvim-treesitter/nvim-treesitter-context', opts = {} },
     },
   },
+  { 'mfussenegger/nvim-lint', ft = { 'go', 'sh' } },
 }, {
   ui = {
     -- If you have a Nerd Font, set icons to an empty table which will use the
