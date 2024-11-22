@@ -33,7 +33,12 @@ M.parse_arc_output = function(output)
     return {}
   end
   for _, line in ipairs(lines) do
-    local decoded = vim.json.decode(line)
+    local ok, decoded = pcall(vim.json.decode, line)
+    if not ok then
+      vim.notify('Failed to parse line from arc lint expected json: ' .. line, vim.log.levels.WARN)
+      goto continue
+    end
+
     for filepath, diag_list in pairs(decoded or {}) do
       for _, item in ipairs(diag_list or {}) do
         if item.severity ~= 'autofix' then
@@ -41,7 +46,7 @@ M.parse_arc_output = function(output)
           local char = truthy(item.char) and item.char or 0
           table.insert(diagnostics, {
             filepath = filepath,
-            lnum = lnum - 1,
+            lnum = lnum,
             col = char - 1,
             end_lnum = lnum - 1,
             end_col = char - 1,
@@ -58,17 +63,17 @@ M.parse_arc_output = function(output)
         end
       end
     end
+    ::continue::
   end
   return diagnostics
 end
 
-M.arc_lint = function(path)
+M.arc_lint = function(paths)
   local command
   command = { 'arc', 'lint', '--never-apply-patches', '--output', 'json' }
-  if path then
-    local files = vim.fn.glob(path)
-    for _, file in ipairs(splitlines(files)) do
-      table.insert(command, file)
+  if paths then
+    for _, path in ipairs(paths) do
+      table.insert(command, path)
     end
   end
 

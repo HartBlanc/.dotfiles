@@ -110,7 +110,12 @@ oil.setup({
           return
         end
         local relative_filepath = dir:gsub('^' .. git_root(), '')
-        require('arc-lint').arc_lint(relative_filepath .. '*')
+        local output = vim.fn.system('fd --type=f . ' .. relative_filepath)
+        local paths = {}
+        for line in output:gmatch('[^\n]+') do
+          table.insert(paths, line)
+        end
+        require('arc-lint').arc_lint(paths)
       end,
     },
   },
