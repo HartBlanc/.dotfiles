@@ -20,7 +20,7 @@ curl -LO "$(curl -s https://api.github.com/repos/tmux/tmux/releases/latest | gre
 tar -xf tmux-*.tar.gz
 sudo apt-get install libevent-dev ncurses-dev build-essential bison pkg-config
 sudo apt-get install libevent ncurses
-cd tmux-*/
+cd tmux-*/ || exit
 ./configure
 make && sudo make install
 cd ..
