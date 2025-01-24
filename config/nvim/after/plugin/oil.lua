@@ -1,6 +1,16 @@
 local oil = require('oil')
 local git_root = require('util').git_root
 
+local function get_paths_for_all_files_in_dir(dir)
+  local relative_filepath = dir:gsub('^' .. git_root(), '')
+  local output = vim.fn.system('fd --type=f -e=go . ' .. relative_filepath)
+  local paths = {}
+  for line in output:gmatch('[^\n]+') do
+    table.insert(paths, line)
+  end
+  return paths
+end
+
 oil.setup({
   skip_confirm_for_simple_edits = false,
   keymaps = {
@@ -107,15 +117,23 @@ oil.setup({
         oil.close()
 
         if not dir then
+          return {}
+        end
+        local paths = get_paths_for_all_files_in_dir(dir)
+        require('arc-lint').arc_lint(paths)
+      end,
+    },
+    ['<leader>zr'] = {
+      desc = '[Z]ero [R]eferences',
+      callback = function()
+        local dir = oil.get_current_dir()
+        oil.close()
+
+        if not dir then
           return
         end
-        local relative_filepath = dir:gsub('^' .. git_root(), '')
-        local output = vim.fn.system('fd --type=f . ' .. relative_filepath)
-        local paths = {}
-        for line in output:gmatch('[^\n]+') do
-          table.insert(paths, line)
-        end
-        require('arc-lint').arc_lint(paths)
+        local paths = get_paths_for_all_files_in_dir(dir)
+        require('zero-references').process_paths(paths)
       end,
     },
   },
