@@ -60,4 +60,31 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufWritePost' }, {
   desc = 'Run arc lint after reading or writing a buffer',
 })
 
-vim.keymap.set('n', '<leader>al', require('arc-lint').arc_lint, { desc = 'Open [A]rc [L]int results to quick fix' })
+local zr = vim.api.nvim_create_namespace('zero-references')
+
+vim.api.nvim_create_autocmd({ 'LspAttach', 'BufWritePost' }, {
+  callback = function(ev)
+    require('zero-references').process_buffer(ev.buf, function(items)
+      local diagnostics = {}
+      for _, item in ipairs(items) do
+        table.insert(diagnostics, {
+          lnum = item.lnum - 1,
+          col = item.col,
+          end_lnum = item.lnum - 1,
+          end_col = item.col,
+          code = nil,
+          source = 'zero-references',
+          user_data = nil,
+          severity = vim.lsp.protocol.DiagnosticSeverity.Warning,
+          message = item.text,
+        })
+      end
+
+      vim.diagnostic.set(zr, ev.buf, diagnostics)
+    end)
+  end,
+  pattern = '*.go', -- just gopls for now, pyright is very slow
+  desc = 'Check for any symbols with no references when reading or writing a buffer',
+})
+
+vim.keymap.set('n', '<leader>al', require('arc-lint').arc_lint, { desc = 'Send [A]rc [L]int results to quick fix' })

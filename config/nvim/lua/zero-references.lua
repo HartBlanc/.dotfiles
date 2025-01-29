@@ -1,7 +1,7 @@
 local M = {}
 
-local function find_symbols_with_zero_references_client(client, uri, handler)
-  client.request('textDocument/documentSymbol', { textDocument = { uri = uri } }, function(err, symbols, _, _)
+local function find_symbols_with_zero_references(requester, uri, handler)
+  requester('textDocument/documentSymbol', { textDocument = { uri = uri } }, function(err, symbols, _, _)
     if err then
       vim.api.nvim_err_writeln('Error when finding document symbols: ' .. err.message)
       handler({})
@@ -22,7 +22,7 @@ local function find_symbols_with_zero_references_client(client, uri, handler)
     local remaining = #items
     local function check_item_for_references(item_num)
       local item = items[item_num]
-      client.request('textDocument/references', {
+      requester('textDocument/references', {
         position = {
           line = item.lnum - 1,
           character = item.col - 1,
@@ -61,7 +61,6 @@ end
 -- Function to process all files in a directory
 M.process_paths = function(paths)
   local quickfix_items = {}
-
   local remaining = #paths
 
   local clients_by_name = {}
@@ -82,7 +81,6 @@ M.process_paths = function(paths)
       return
     end
 
-    print('filetype based on filename ' .. ft)
     for name, config in pairs(require('lspconfig.configs')) do
       if not config.filetypes then
         goto continue
@@ -132,8 +130,7 @@ M.process_paths = function(paths)
     end
 
     vim.defer_fn(function()
-      find_symbols_with_zero_references_client(client, vim.uri_from_fname(abspath), function(file_items)
-        print('entering file callback for: ' .. path .. ' remaining: ' .. remaining)
+      find_symbols_with_zero_references(client.request, vim.uri_from_fname(abspath), function(file_items)
         for i = 1, #file_items do
           table.insert(quickfix_items, file_items[i])
         end
@@ -150,6 +147,18 @@ M.process_paths = function(paths)
   for i = 1, #paths do
     process_file(i)
   end
+end
+
+M.process_buffer = function(bufnr, handler)
+  find_symbols_with_zero_references(
+    function(m, p, h)
+      vim.lsp.buf_request(bufnr, m, p, h)
+    end,
+    vim.uri_from_bufnr(bufnr),
+    function(items)
+      handler(items)
+    end
+  )
 end
 
 return M
