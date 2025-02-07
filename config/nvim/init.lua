@@ -223,7 +223,7 @@ require('lazy').setup({
 
       -- experimental signature help support
       signature = { enabled = true },
-  },
+    },
     'christoomey/vim-tmux-navigator',
     cmd = {
       'TmuxNavigateLeft',
