@@ -26,6 +26,12 @@ require('lazy').setup({
     },
   },
   {
+    'ray-x/lsp_signature.nvim', -- Show function signature when you type
+    opts = {
+      hint_enable = false,
+    },
+  },
+  {
     'rcarriga/nvim-notify', -- fancy notification popups
     config = function()
       -- registers nvim-notify as the default notification provider
@@ -122,6 +128,34 @@ require('lazy').setup({
     'stevearc/conform.nvim', -- Autoformaters
   },
   {
+    'hrsh7th/nvim-cmp', -- Autocompletion
+    dependencies = {
+      -- Snippet Engine & its associated nvim-cmp source
+      {
+        'L3MON4D3/LuaSnip',
+        build = 'make install_jsregexp',
+      },
+      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-cmdline',
+
+      -- Adds other completion capabilities.
+      --  nvim-cmp does not ship with all sources by default. They are split
+      --  into multiple repos for maintenance purposes.
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-path',
+      -- nvim-cmp source for neovim Lua API
+      -- so that things like vim.keymap.set, etc. are autocompleted
+      'hrsh7th/cmp-nvim-lua',
+
+      -- If you want to add a bunch of pre-configured snippets,
+      --    you can use this plugin to help you. It even has snippets
+      --    for various frameworks/libraries/etc. but you will have to
+      --    set up the ones that are useful for you.
+      -- 'rafamadriz/friendly-snippets',
+    },
+  },
+
+  {
     'folke/tokyonight.nvim', -- colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     init = function()
@@ -213,17 +247,6 @@ require('lazy').setup({
   },
   { 'mfussenegger/nvim-lint', ft = { 'go', 'sh' } },
   {
-    'saghen/blink.cmp',
-
-    version = 'v0.*',
-    opts = {
-      appearance = {
-        nerd_font_variant = 'mono',
-      },
-
-      -- experimental signature help support
-      signature = { enabled = true },
-    },
     'christoomey/vim-tmux-navigator',
     cmd = {
       'TmuxNavigateLeft',
